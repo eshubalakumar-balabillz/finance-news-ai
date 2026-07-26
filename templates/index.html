@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Finance News</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .date {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .source-section {
+            margin-bottom: 30px;
+        }
+        
+        .source-title {
+            background-color: white;
+            color: #667eea;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-left: 5px solid #667eea;
+        }
+        
+        .articles {
+            background-color: white;
+            border-radius: 0 0 8px 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .article {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s;
+        }
+        
+        .article:last-child {
+            border-bottom: none;
+        }
+        
+        .article:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .article-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .article-title a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .article-title a:hover {
+            text-decoration: underline;
+        }
+        
+        .article-meta {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .article-description {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .read-more {
+            display: inline-block;
+            margin-top: 10px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .read-more:hover {
+            text-decoration: underline;
+        }
+        
+        .no-articles {
+            background-color: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 8px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Daily Finance News</h1>
+            <p class="date">{{ current_date }}</p>
+        </header>
+        
+        {% if articles_by_source %}
+            {% for source, articles in articles_by_source.items() %}
+                <div class="source-section">
+                    <div class="source-title">{{ source }}</div>
+                    <div class="articles">
+                        {% for article in articles %}
+                            <div class="article">
+                                <div class="article-title">
+                                    <a href="{{ article.url }}" target="_blank">
+                                        {{ article.title }}
+                                    </a>
+                                </div>
+                                <div class="article-meta">
+                                    Published: {{ article.publishedAt[:10] }}
+                                </div>
+                                {% if article.description %}
+                                    <div class="article-description">
+                                        {{ article.description }}
+                                    </div>
+                                {% endif %}
+                                <a href="{{ article.url }}" target="_blank" class="read-more">
+                                    Read Full Article →
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-articles">
+                <p>No articles found. Please check your API key and try again.</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
