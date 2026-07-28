@@ -1,24 +1,29 @@
+import os
 import schedule
 import time
-from send_email import send_daily_email
-from config import SCHEDULE_TIME
 from datetime import datetime
+from fetch_news import fetch_finance_news
+from send_email import send_email
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def job():
-    """Job to run at scheduled time"""
-    print(f"\n{'='*60}")
-    print(f"[{datetime.now()}] Running scheduled news email job...")
-    print(f"{'='*60}")
-    send_daily_email()
+    print(f"[{datetime.now()}] Running scheduled task...")
+    try:
+        news = fetch_finance_news()
+        recipient_email = os.getenv("RECIPIENT_EMAIL")
+        send_email(recipient_email, news)
+        print(f"[{datetime.now()}] Email sent successfully!")
+    except Exception as e:
+        print(f"[{datetime.now()}] Error: {e}")
 
-# Schedule the job
-schedule.every().day.at(SCHEDULE_TIME).do(job)
+# Schedule the job for 7:00 AM every day
+schedule.every().day.at("07:00").do(job)
 
-print(f"✅ Scheduler started!")
-print(f"📧 News will be sent daily at {SCHEDULE_TIME}")
-print(f"To stop, press Ctrl + C")
+print("Scheduler started. Waiting for 7:00 AM...")
 
-# Keep scheduler running
+# Keep the scheduler running
 while True:
     schedule.run_pending()
-    time.sleep(60)  # Check every minute if a job needs to run
+    time.sleep(60)
