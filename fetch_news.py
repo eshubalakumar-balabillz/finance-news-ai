@@ -1,22 +1,30 @@
 import requests
 from config import NEWSAPI_KEY
-from datetime import datetime, timedelta
 
 def fetch_financial_news():
-    """Fetch financial news using keywords"""
+    """Fetch financial news from premium sources only"""
     
     all_articles = []
     
-    # Use keywords instead of sources
-    keywords = ['finance', 'stocks', 'market', 'economy', 'business']
+    # Premium financial news sources
+    sources = [
+        'financial-times',
+        'bloomberg',
+        'reuters',
+        'cnbc',
+        'the-wall-street-journal',
+        'bbc-news',
+        'the-economist',
+        'ft.com'
+    ]
     
-    for keyword in keywords:
-        print(f"Fetching news for '{keyword}'...")
-        
-        url = "https://newsapi.org/v2/everything"
+    url = "https://newsapi.org/v2/everything"
+    
+    for source in sources:
+        print(f"Fetching news from '{source}'...")
         
         params = {
-            'q': keyword,
+            'sources': source,
             'sortBy': 'publishedAt',
             'apiKey': NEWSAPI_KEY,
             'pageSize': 5,
@@ -30,10 +38,10 @@ def fetch_financial_news():
             data = response.json()
             articles = data.get('articles', [])
             all_articles.extend(articles)
-            print(f"✅ Found {len(articles)} articles for '{keyword}'")
+            print(f"✅ Found {len(articles)} articles from '{source}'")
             
         except requests.exceptions.RequestException as e:
-            print(f"Error fetching '{keyword}': {e}")
+            print(f"Error fetching '{source}': {e}")
     
     # Remove duplicates
     seen_urls = set()
@@ -44,26 +52,3 @@ def fetch_financial_news():
             unique_articles.append(article)
     
     return unique_articles
-
-def display_articles(articles):
-    """Display articles in a nice format"""
-    
-    print("\n" + "="*80)
-    print(f"FINANCIAL NEWS DIGEST - {datetime.now().strftime('%B %d, %Y')}")
-    print("="*80 + "\n")
-    
-    if not articles:
-        print("No articles found.")
-        return
-    
-    for i, article in enumerate(articles, 1):
-        print(f"{i}. {article['title']}")
-        print(f"   Source: {article['source']['name']}")
-        print(f"   Published: {article['publishedAt'][:10]}")
-        print(f"   URL: {article['url']}")
-        print()
-
-if __name__ == "__main__":
-    print("Fetching latest financial news...")
-    articles = fetch_financial_news()
-    display_articles(articles)
