@@ -2,7 +2,7 @@ import os
 import schedule
 import time
 from datetime import datetime
-from fetch_news import fetch_finance_news
+from fetch_news import fetch_financial_news
 from send_email import send_email
 from dotenv import load_dotenv
 
