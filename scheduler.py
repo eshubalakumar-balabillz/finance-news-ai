@@ -19,7 +19,7 @@ def job():
         print(f"[{datetime.now()}] Error: {e}")
 
 # Schedule the job for 7:00 AM every day
-schedule.every().day.at("07:00").do(job)
+schedule.every().day.at("10:30").do(job)
 
 print("Scheduler started. Waiting for 7:00 AM...")
 
