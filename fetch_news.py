@@ -1,41 +1,53 @@
 import requests
-from config import NEWSAPI_KEY, NEWS_SOURCES
+from config import NEWSAPI_KEY
 from datetime import datetime, timedelta
 
 def fetch_financial_news():
-    """Fetch financial news from multiple sources"""
+    """Fetch financial news using keywords"""
     
     all_articles = []
     
-    # Get news from yesterday (so we have fresh content each morning)
-    yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+    # Get news from today
+    today = datetime.now().strftime('%Y-%m-%d')
     
-    for source in NEWS_SOURCES:
-        print(f"Fetching news from {source}...")
+    # Use keywords instead of sources
+    keywords = ['finance', 'stocks', 'market', 'economy', 'business']
+    
+    for keyword in keywords:
+        print(f"Fetching news for '{keyword}'...")
         
-        # NewsAPI endpoint
         url = "https://newsapi.org/v2/everything"
         
         params = {
-            'sources': source,
-            'from': yesterday,
+            'q': keyword,
+            'from': today,
             'sortBy': 'publishedAt',
             'apiKey': NEWSAPI_KEY,
-            'pageSize': 5  # Get top 5 articles per source
+            'pageSize': 3,
+            'language': 'en'
         }
         
         try:
             response = requests.get(url, params=params)
-            response.raise_for_status()  # Check for errors
+            response.raise_for_status()
             
             data = response.json()
             articles = data.get('articles', [])
             all_articles.extend(articles)
+            print(f"✅ Found {len(articles)} articles for '{keyword}'")
             
         except requests.exceptions.RequestException as e:
-            print(f"Error fetching from {source}: {e}")
+            print(f"Error fetching '{keyword}': {e}")
     
-    return all_articles
+    # Remove duplicates
+    seen_urls = set()
+    unique_articles = []
+    for article in all_articles:
+        if article['url'] not in seen_urls:
+            seen_urls.add(article['url'])
+            unique_articles.append(article)
+    
+    return unique_articles
 
 def display_articles(articles):
     """Display articles in a nice format"""
