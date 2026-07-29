@@ -7,9 +7,6 @@ def fetch_financial_news():
     
     all_articles = []
     
-    # Get news from today
-    today = datetime.now().strftime('%Y-%m-%d')
-    
     # Use keywords instead of sources
     keywords = ['finance', 'stocks', 'market', 'economy', 'business']
     
@@ -20,10 +17,9 @@ def fetch_financial_news():
         
         params = {
             'q': keyword,
-            'from': today,
             'sortBy': 'publishedAt',
             'apiKey': NEWSAPI_KEY,
-            'pageSize': 3,
+            'pageSize': 5,
             'language': 'en'
         }
         
